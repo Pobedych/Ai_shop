@@ -1,5 +1,7 @@
 python-decouple
 aiogram
+aiogram_i18n
+fluent_compiler
 sqlalchemy
-
+asyncpg
 httpx
