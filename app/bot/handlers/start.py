@@ -5,7 +5,7 @@ from aiogram_i18n import I18nContext
 
 from app.backend.core.config import SUPPORT_ACCOUNT, TG_CHANNEL
 from app.backend.core.database import SessionLocal
-from app.backend.services.auth import get_or_create_user
+from app.backend.services.user_service import get_or_create_user, get_user
 from app.backend.utils.convert import converted_currency
 
 from app.bot.keyboards.inlinekey import language_menu, start_menu
@@ -26,6 +26,7 @@ async def start(message: Message, i18n: I18nContext):
             phone=None,
             email=None,
         )
+    await i18n.set_locale(db_user.language)
     await message.answer(
         i18n.get(
             "start-welcome",
@@ -39,13 +40,14 @@ async def start(message: Message, i18n: I18nContext):
     )
 
 
-#CALLBACK
+#CALLBACK SHOP
 @router.callback_query(F.data == 'shop')
 async def shop(cq: CallbackQuery):
     await cq.answer()
     await cq.message.answer("Shop is not implemented yet.")
 
 
+#CALLBACK SETTINGS
 @router.callback_query(F.data == 'settings')
 async def settings(cq: CallbackQuery, i18n: I18nContext):
     await cq.answer()
@@ -61,6 +63,15 @@ async def set_language(cq: CallbackQuery, i18n: I18nContext):
         await cq.answer("Unsupported language", show_alert=True)
         return
 
+    async with SessionLocal() as session:
+        db_user = await get_user(db=session, tg_id=cq.from_user.id)
+        if db_user is None:
+            await cq.answer("User not found. Send /start first.", show_alert=True)
+            return
+
+        db_user.language = locale
+        await session.commit()
+
     await i18n.set_locale(locale)
 
     notice = "Language switched to English." if locale == "en" else "Язык переключен на русский."
@@ -68,6 +79,5 @@ async def set_language(cq: CallbackQuery, i18n: I18nContext):
 
     await cq.answer(notice)
     await cq.message.edit_text(prompt, reply_markup=language_menu(locale))
-
 
 

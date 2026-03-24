@@ -19,6 +19,7 @@ class User(Base):
 
     is_active = Column(Boolean, nullable=False, default=True)
     role = Column(String, nullable=False, default='USER')
+    language = Column(String, nullable=False, default='en')
 
     balance = Column(BigInteger, nullable=False, default=0)
     purchase_count = Column(BigInteger, nullable=False, default=0)

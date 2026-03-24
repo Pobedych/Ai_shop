@@ -56,6 +56,6 @@ db: AsyncSession, tg_id: int,
 
         if user is None:
             raise
-    return user, False
+        return user, False
 
 
