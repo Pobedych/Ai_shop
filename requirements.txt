@@ -1,7 +1,7 @@
-python-decouple
-aiogram
-aiogram_i18n
-fluent_compiler
-sqlalchemy
-asyncpg
-httpx
+python-decouple==3.8
+aiogram==3.26.0
+aiogram_i18n==1.5
+fluent_compiler==1.1
+sqlalchemy==2.0.48
+asyncpg==0.31.0
+httpx==0.28.1

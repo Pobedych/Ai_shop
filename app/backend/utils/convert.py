@@ -1,5 +1,4 @@
 import httpx
-import asyncio
 
 async def converted_currency(base: str, quote: str, amount: float = 1.0) -> dict:
     base = base.upper()
@@ -18,13 +17,5 @@ async def converted_currency(base: str, quote: str, amount: float = 1.0) -> dict
     rate = float(data["rates"][quote])
     converted = round(amount * rate, 2)
 
-    return {"converted": converted, "rate": rate}
-
-async def main() -> None:
-    result = await converted_currency("RUB", "USD", 100)
-    print(result)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+    return converted
 

@@ -1,14 +1,22 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram_i18n import I18nContext
 
-def start_menu():
+
+def start_menu(i18n: I18nContext):
     inline_kb = [
-        [InlineKeyboardButton(text="Shop", callback_data="shop")],
-        [InlineKeyboardButton(text="My Balance", callback_data="my_balance")],
-        [InlineKeyboardButton(text="Settings", callback_data="settings")],
-        [InlineKeyboardButton(text="About", callback_data="about")],
+        [InlineKeyboardButton(text=i18n.get('shop_button'), callback_data="shop")],
+        [InlineKeyboardButton(text=i18n.get('balance_button'), callback_data="my_balance")],
+        [InlineKeyboardButton(text=i18n.get('settings_button'), callback_data="settings")],
+        [InlineKeyboardButton(text=i18n.get('about_button'), callback_data="about")],
     ]
     return InlineKeyboardMarkup(inline_keyboard=inline_kb)
 
+def settings_menu(i18n: I18nContext):
+    inline_kb = [
+        [InlineKeyboardButton(text=i18n.get('set_language_button'), callback_data="set_language")],
+        [InlineKeyboardButton(text=i18n.get('about_me_button'), callback_data="about_me")],
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=inline_kb)
 
 def language_menu(current_locale: str | None = None):
     en_text = "English"
@@ -22,6 +30,13 @@ def language_menu(current_locale: str | None = None):
     inline_kb = [
         [InlineKeyboardButton(text=en_text, callback_data="set_lang:en")],
         [InlineKeyboardButton(text=ru_text, callback_data="set_lang:ru")],
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=inline_kb)
+
+#FIX IN MVP ADD REAL PAYMENTS METHOD
+def top_up_menu():
+    inline_kb = [
+        [InlineKeyboardButton(text='CryptoBot 1.5% fee', callback_data='pay'), InlineKeyboardButton(text='XRocket 1% fee', callback_data="pay")]
     ]
     return InlineKeyboardMarkup(inline_keyboard=inline_kb)
 
