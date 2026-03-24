@@ -9,7 +9,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
-    tg_id = Column(BigInteger, primary_key=True, nullable=False)
+    tg_id = Column(BigInteger, unique=True, index=True, nullable=False)
 
     username = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
