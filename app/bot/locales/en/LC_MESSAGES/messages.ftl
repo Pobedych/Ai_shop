@@ -8,10 +8,30 @@ start-welcome =
     🤝 Support { $account }
 
 settings = Choose what to change
+language-prompt = Choose language:
+language-switched = Language switched successfully.
+unsupported-language = Unsupported language.
+user-not-found = User not found. Send /start first.
+shop-not-implemented = Shop is not implemented yet.
+shop-choose-category = Choose a category:
+shop-choose-item = Category: { $category }\nChoose an item:
+shop-empty-category = There are no items in category "{ $category }".
 
-balance-info = Your balance: {$balance} RUB • {$usd_balance} USD
+balance-info = Your balance: { $balance } RUB • { $usd_balance } USD
 up-balance = 💳 Top up your balance now
 choose-top-up-balance = Choose a top-up method ⬇️
+top-up-enter-amount = Enter the amount you want to top up
+top-up-invalid-amount = Enter a valid amount without dots or commas, only a whole number.
+top-up-amount-positive = Enter an amount greater than 0.
+top-up-success = Balance topped up: { $balance }
+
+payment-method-cryptobot = CryptoBot 1.5% fee
+payment-method-xrocket = XRocket 1% fee
+
+language-name-en = English
+language-name-ru = Russian
+language-name-zh = Chinese
+language-selected = { $name } (selected)
 
 #Inline start menu
 shop_button = 👜 Shop

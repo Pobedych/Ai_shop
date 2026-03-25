@@ -18,6 +18,8 @@ class Item(Base):
     id: Mapped[uuid.UUID] = mapped_column(Uuid(),primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
+    mini_description: Mapped[str] = mapped_column(Text, nullable=True)
+    category: Mapped[str] = mapped_column(String(50), nullable=False, index=True)
 
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     count: Mapped[int] = mapped_column(Integer, nullable=False)
