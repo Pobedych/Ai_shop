@@ -8,13 +8,11 @@ if str(ROOT_DIR) not in sys.path:
 
 from app.bot.create_bot import bot, dp
 from app.bot.handlers.start import router
-from app.backend.core.database import init_models
 
 from aiogram_i18n import I18nMiddleware
 from aiogram_i18n.cores.fluent_compile_core import FluentCompileCore
 
 async def main():
-    await init_models()
     dp.include_router(router)
     locales_path = (Path(__file__).resolve().parent / "locales" / "{locale}" / "LC_MESSAGES").as_posix()
     i18n_middleware = I18nMiddleware(core=FluentCompileCore(path=locales_path, default_locale="en"))

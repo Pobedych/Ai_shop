@@ -5,3 +5,5 @@ fluent_compiler==1.1
 sqlalchemy==2.0.48
 asyncpg==0.31.0
 httpx==0.28.1
+alembic
+psycopg[binary]

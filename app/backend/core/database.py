@@ -23,13 +23,6 @@ class Base(DeclarativeBase):
         }
     )
 
-async def init_models() -> None:
-    # Import models here so they are registered in Base.metadata before create_all.
-    from app.backend.models import user  # noqa: F401
-
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
 
 async def get_db():
     async with SessionLocal() as db:

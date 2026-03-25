@@ -32,5 +32,20 @@ services:
       db:
         condition: service_healthy
 
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+    depends_on:
+      db:
+        condition: service_healthy
+    command: [ "alembic", "upgrade", "head" ]
+    restart: "no"
+
 volumes:
   postgres_data:

@@ -21,15 +21,19 @@ def settings_menu(i18n: I18nContext):
 def language_menu(current_locale: str | None = None):
     en_text = "English"
     ru_text = "Russian"
+    zh_text = "Chinese"
 
     if current_locale == "en":
         en_text = "English (selected)"
     elif current_locale == "ru":
         ru_text = "Russian (selected)"
+    elif current_locale == "zh":
+        zh_text = "Chinese (selected)"
 
     inline_kb = [
         [InlineKeyboardButton(text=en_text, callback_data="set_lang:en")],
         [InlineKeyboardButton(text=ru_text, callback_data="set_lang:ru")],
+        [InlineKeyboardButton(text=zh_text, callback_data="set_lang:zh")],
     ]
     return InlineKeyboardMarkup(inline_keyboard=inline_kb)
 
@@ -39,4 +43,3 @@ def top_up_menu():
         [InlineKeyboardButton(text='CryptoBot 1.5% fee', callback_data='pay'), InlineKeyboardButton(text='XRocket 1% fee', callback_data="pay")]
     ]
     return InlineKeyboardMarkup(inline_keyboard=inline_kb)
-
