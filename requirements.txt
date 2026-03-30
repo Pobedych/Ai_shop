@@ -7,3 +7,5 @@ asyncpg==0.31.0
 httpx==0.28.1
 alembic
 psycopg[binary]
+pytest
+pytest-asyncio
