@@ -1,4 +1,3 @@
-import os
 from decouple import config
 
 DB_HOST = config("DB_HOST", "localhost")

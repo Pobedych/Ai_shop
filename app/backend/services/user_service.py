@@ -1,10 +1,19 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.models.user import User
 
-async def register_user(db: AsyncSession, tg_id: int, username: str | None, first_name: str | None, last_name: str| None, email: str | None, phone: str | None) -> User:
+
+async def register_user(
+    db: AsyncSession,
+    tg_id: int,
+    username: str | None,
+    first_name: str | None,
+    last_name: str | None,
+    email: str | None,
+    phone: str | None,
+) -> User:
     user = User(
         tg_id=tg_id,
         username=username,
@@ -15,25 +24,28 @@ async def register_user(db: AsyncSession, tg_id: int, username: str | None, firs
         is_active=True,
         role="USER",
         balance=0,
-        purchase_count=0
+        purchase_count=0,
     )
     db.add(user)
     await db.flush()
     await db.refresh(user)
     return user
 
+
 async def get_user(db: AsyncSession, tg_id: int) -> User | None:
     q = select(User).where(User.tg_id == tg_id)
     user = await db.scalar(q)
     return user
 
+
 async def get_or_create_user(
-db: AsyncSession, tg_id: int,
-        username: str | None,
-        first_name: str | None,
-        last_name: str | None,
-        phone: str | None,
-        email: str | None,
+    db: AsyncSession,
+    tg_id: int,
+    username: str | None,
+    first_name: str | None,
+    last_name: str | None,
+    phone: str | None,
+    email: str | None,
 ) -> tuple[User, bool]:
     user = await get_user(db, tg_id)
     if user:
@@ -57,5 +69,3 @@ db: AsyncSession, tg_id: int,
         if user is None:
             raise
         return user, False
-
-

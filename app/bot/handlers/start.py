@@ -1,17 +1,21 @@
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram_i18n import I18nContext
 
 from app.backend.core.config import SUPPORT_ACCOUNT, TG_CHANNEL
 from app.backend.core.database import SessionLocal
 from app.backend.services.user_service import get_or_create_user, get_user
 from app.backend.utils.convert import converted_currency
-
-from app.bot.keyboards.inlinekey import language_menu, start_menu, settings_menu, top_up_menu
-from app.bot.keyboards.replykey import up_balance_kb
 from app.bot.filter.settings_fsm import Refill
+from app.bot.keyboards.inlinekey import (
+    language_menu,
+    settings_menu,
+    start_menu,
+    top_up_menu,
+)
+from app.bot.keyboards.replykey import up_balance_kb
 
 router = Router()
 
@@ -99,7 +103,9 @@ async def balance(cq: CallbackQuery, i18n: I18nContext):
 @router.callback_query(F.data == "set_language")
 async def open_language_settings(cq: CallbackQuery, i18n: I18nContext):
     await cq.answer()
-    await cq.message.answer(i18n.get("language-prompt"), reply_markup=language_menu(i18n, i18n.locale))
+    await cq.message.answer(
+        i18n.get("language-prompt"), reply_markup=language_menu(i18n, i18n.locale)
+    )
 
 
 @router.callback_query(F.data.startswith("set_lang:"))
@@ -120,7 +126,9 @@ async def set_language(cq: CallbackQuery, i18n: I18nContext):
 
     await i18n.set_locale(locale)
     await cq.answer(i18n.get("language-switched"))
-    await cq.message.edit_text(i18n.get("language-prompt"), reply_markup=language_menu(i18n, locale))
+    await cq.message.edit_text(
+        i18n.get("language-prompt"), reply_markup=language_menu(i18n, locale)
+    )
 
 
 @router.message(F.text)
@@ -128,4 +136,6 @@ async def up_balance(message: Message, i18n: I18nContext):
     if message.text != i18n.get("up-balance"):
         return
 
-    await message.answer(text=i18n.get("choose-top-up-balance"), reply_markup=top_up_menu(i18n))
+    await message.answer(
+        text=i18n.get("choose-top-up-balance"), reply_markup=top_up_menu(i18n)
+    )

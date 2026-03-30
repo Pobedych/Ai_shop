@@ -9,3 +9,6 @@ alembic
 psycopg[binary]
 pytest
 pytest-asyncio
+ruff
+black
+pre-commit

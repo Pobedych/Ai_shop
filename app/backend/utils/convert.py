@@ -1,5 +1,6 @@
 import httpx
 
+
 async def converted_currency(base: str, quote: str, amount: float = 1.0) -> dict:
     base = base.upper()
     quote = quote.upper()
@@ -18,4 +19,3 @@ async def converted_currency(base: str, quote: str, amount: float = 1.0) -> dict
     converted = round(amount * rate, 2)
 
     return converted
-

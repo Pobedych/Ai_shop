@@ -1,9 +1,10 @@
-from sqlalchemy import Column, String, BigInteger, DateTime, Boolean
-from datetime import datetime, timezone
+import uuid
+from datetime import UTC, datetime
+
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, String
 
 from app.backend.core.database import Base
 
-import uuid
 
 class User(Base):
     __tablename__ = "users"
@@ -18,11 +19,18 @@ class User(Base):
     phone = Column(String, nullable=True)
 
     is_active = Column(Boolean, nullable=False, default=True)
-    role = Column(String, nullable=False, default='USER')
-    language = Column(String, nullable=False, default='en')
+    role = Column(String, nullable=False, default="USER")
+    language = Column(String, nullable=False, default="en")
 
     balance = Column(BigInteger, nullable=False, default=0)
     purchase_count = Column(BigInteger, nullable=False, default=0)
 
-    created_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
-    updated_at = Column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    created_at = Column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
+    )
