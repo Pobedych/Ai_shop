@@ -23,6 +23,8 @@ services:
       dockerfile: Dockerfile
     container_name: ai_shop_bot
     restart: unless-stopped
+    volumes:
+      - .:/app
     env_file:
       - .env
     environment:
@@ -36,6 +38,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - .:/app
     env_file:
       - .env
     environment:
