@@ -12,11 +12,15 @@ from aiogram_i18n.cores.fluent_compile_core import FluentCompileCore
 from app.bot.create_bot import bot, dp
 from app.bot.handlers.shop import shop_router
 from app.bot.handlers.start import router
+from app.bot.handlers.admins_only import admin_router
+from app.bot.middleware.user import UserMiddleware
 
 
 async def main():
-    dp.include_router(router)
     dp.include_router(shop_router)
+    dp.include_router(admin_router)
+    dp.include_router(router)
+    dp.update.middleware(UserMiddleware())
     locales_path = (
         Path(__file__).resolve().parent / "locales" / "{locale}" / "LC_MESSAGES"
     ).as_posix()

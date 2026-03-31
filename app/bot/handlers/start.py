@@ -6,7 +6,8 @@ from aiogram_i18n import I18nContext
 
 from app.backend.core.config import SUPPORT_ACCOUNT, TG_CHANNEL
 from app.backend.core.database import SessionLocal
-from app.backend.services.user_service import get_or_create_user, get_user
+from app.backend.models.user import User
+from app.backend.services.user_service import get_user
 from app.backend.utils.convert import converted_currency
 from app.bot.filter.settings_fsm import Refill
 from app.bot.keyboards.inlinekey import (
@@ -21,23 +22,12 @@ router = Router()
 
 
 @router.message(CommandStart())
-async def start(message: Message, i18n: I18nContext):
-    tg_user = message.from_user
-    async with SessionLocal() as session:
-        db_user, _created = await get_or_create_user(
-            db=session,
-            tg_id=tg_user.id,
-            username=tg_user.username,
-            first_name=tg_user.first_name,
-            last_name=tg_user.last_name,
-            phone=None,
-            email=None,
-        )
+async def start(message: Message, i18n: I18nContext, db_user: User):
     await i18n.set_locale(db_user.language)
     await message.answer(
         i18n.get(
             "start-welcome",
-            id=str(tg_user.id),
+            id=str(message.from_user.id),
             balance=db_user.balance,
             usd_balance=await converted_currency("rub", "usd", db_user.balance),
             tg_chanel=TG_CHANNEL,
@@ -131,7 +121,7 @@ async def set_language(cq: CallbackQuery, i18n: I18nContext):
     )
 
 
-@router.message(F.text)
+@router.message(F.text & ~F.text.startswith("💳"))
 async def up_balance(message: Message, i18n: I18nContext):
     if message.text != i18n.get("up-balance"):
         return
