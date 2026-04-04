@@ -35,7 +35,7 @@ class User(Base):
     role: Mapped[str] = mapped_column(String(), nullable=False, default="USER")
     language: Mapped[str] = mapped_column(String(), nullable=False, default="en")
 
-    balance: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False, default=Decimal("0.00"))
+    balance: Mapped[Decimal] = mapped_column(Numeric(18, 2), nullable=False, default=Decimal("0.00"))
     purchase_count: Mapped[int] = mapped_column(BigInteger(), nullable=False, default=0)
 
     created_at: Mapped[datetime] = mapped_column(
