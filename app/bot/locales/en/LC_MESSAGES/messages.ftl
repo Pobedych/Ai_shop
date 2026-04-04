@@ -2,10 +2,10 @@ start-welcome =
     🤖 Welcome to SeaShop!
 
     ℹ️ Your ID: { $id }
-    💰 Balance: { $balance }₽ • { $usd_balance }$
-    🌐 Telegram chanel - { $tg_chanel }
+    💰 Balance: { $balance } RUB • { $usd_balance } USD
+    🌐 Telegram channel: { $tg_chanel }
     💡 Use /start to open the main menu
-    🤝 Support { $account }
+    🤝 Support: { $account }
 
 settings = Choose what to change
 language-prompt = Choose language:
@@ -33,17 +33,15 @@ language-name-ru = Russian
 language-name-zh = Chinese
 language-selected = { $name } (selected)
 
-#Inline start menu
 shop_button = 👜 Shop
 balance_button = 💵 Balance
 settings_button = ⚙️ Settings
 about_button = ❗ About
 
-#settings menu
 set_language_button = 🌍 Language
 about_me_button = 👉 About me
+about-us = We are a company selling digital goods, our contacts: { $account }
 
-#captcha
 captcha-prompt = Please enter the CAPTCHA code: { $captcha }
 captcha-success = Verification successful!
 captcha-failed = Invalid code. Try again.

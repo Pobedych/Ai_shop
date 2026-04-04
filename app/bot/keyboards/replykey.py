@@ -7,3 +7,12 @@ def up_balance_kb(i18n: I18nContext):
     return ReplyKeyboardMarkup(
         keyboard=balance, resize_keyboard=True, one_time_keyboard=True
     )
+
+
+def home():
+    reply_kb = [
+        [KeyboardButton(text="/start")],
+    ]
+    return ReplyKeyboardMarkup(
+        keyboard=reply_kb, resize_keyboard=True, one_time_keyboard=True
+    )

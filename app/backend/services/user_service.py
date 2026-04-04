@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,7 +15,7 @@ async def register_user(
     last_name: str | None,
     email: str | None,
     phone: str | None,
-    role: str | None
+    role: str | None,
 ) -> User:
     user = User(
         tg_id=tg_id,
@@ -24,7 +26,7 @@ async def register_user(
         phone=phone,
         is_active=True,
         role=role,
-        balance=0,
+        balance=Decimal("0.00"),
         purchase_count=0,
     )
     db.add(user)
@@ -47,7 +49,7 @@ async def get_or_create_user(
     last_name: str | None,
     phone: str | None,
     email: str | None,
-    role: str | None
+    role: str | None,
 ) -> tuple[User, bool]:
     user = await get_user(db, tg_id)
     if user:
@@ -61,7 +63,7 @@ async def get_or_create_user(
             last_name=last_name,
             email=email,
             phone=phone,
-            role=role
+            role=role,
         )
         await db.commit()
         return user, True

@@ -12,3 +12,4 @@ pytest-asyncio
 ruff
 black
 pre-commit
+aiocryptopay

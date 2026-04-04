@@ -1,7 +1,11 @@
+from decimal import Decimal, ROUND_HALF_UP
+
 import httpx
 
 
-async def converted_currency(base: str, quote: str, amount: float = 1.0) -> float:
+async def converted_currency(
+    base: str, quote: str, amount: Decimal | int | float = 1.0
+) -> float:
     base = base.upper()
     quote = quote.upper()
 
@@ -15,7 +19,12 @@ async def converted_currency(base: str, quote: str, amount: float = 1.0) -> floa
     if data.get("result") != "success" or quote not in data.get("rates", {}):
         raise ValueError(f"Cannot convert {base} to {quote}")
 
-    rate = float(data["rates"][quote])
-    converted = round(amount * rate, 2)
+    decimal_amount = amount if isinstance(amount, Decimal) else Decimal(str(amount))
+    rate = Decimal(str(data["rates"][quote]))
+    converted = (decimal_amount * rate).quantize(
+        Decimal("0.01"), rounding=ROUND_HALF_UP
+    )
 
-    return converted
+    return float(converted)
+
+

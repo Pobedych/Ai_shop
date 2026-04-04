@@ -3,6 +3,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from app.backend.core.database import SessionLocal
 
+
 class DbSessionMiddleware(BaseMiddleware):
     async def __call__(
         self,
