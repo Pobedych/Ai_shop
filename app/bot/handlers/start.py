@@ -66,7 +66,7 @@ async def pay(cq: CallbackQuery, i18n: I18nContext, state: FSMContext):
     await cq.message.answer(text=i18n.get("top-up-enter-amount"))
 
 
-@router.message(F.text & Refill.money)
+@router.message(Refill.money, F.text)
 async def money(
     message: Message,
     i18n: I18nContext,
