@@ -118,6 +118,9 @@ async def test_admin_middleware_swallows_network_error_on_denial(
 ) -> None:
     monkeypatch.setattr(admin_module, "Message", DummyMessage)
     monkeypatch.setattr(admin_module, "CallbackQuery", DummyCallbackQuery)
+    monkeypatch.setattr(
+        admin_module, "SessionLocal", lambda: DummySessionContext(object())
+    )
     get_user = AsyncMock()
     monkeypatch.setattr(admin_module, "get_user", get_user)
 

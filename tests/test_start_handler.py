@@ -1,4 +1,5 @@
 from unittest.mock import AsyncMock
+from decimal import Decimal
 
 import pytest
 
@@ -13,7 +14,7 @@ class DummyI18n:
         return key
 
 
-def make_user(balance: int = 0) -> User:
+def make_user(balance: Decimal = Decimal("0.00")) -> User:
     return User(
         tg_id=123456,
         username="alice",
@@ -33,7 +34,7 @@ async def test_money_rejects_non_numeric_amount() -> None:
     message.text = "abc"
     state = AsyncMock()
     session = AsyncMock()
-    db_user = make_user(balance=10)
+    db_user = make_user(balance=Decimal("10.00"))
 
     await money(
         message=message,
@@ -43,7 +44,7 @@ async def test_money_rejects_non_numeric_amount() -> None:
         session=session,
     )
 
-    assert db_user.balance == 10
+    assert db_user.balance == Decimal("10.00")
     session.commit.assert_not_awaited()
     state.clear.assert_not_awaited()
     message.answer.assert_awaited_once_with("top-up-invalid-amount")
@@ -55,7 +56,7 @@ async def test_money_rejects_non_positive_amount() -> None:
     message.text = "0"
     state = AsyncMock()
     session = AsyncMock()
-    db_user = make_user(balance=10)
+    db_user = make_user(balance=Decimal("10.00"))
 
     await money(
         message=message,
@@ -65,7 +66,7 @@ async def test_money_rejects_non_positive_amount() -> None:
         session=session,
     )
 
-    assert db_user.balance == 10
+    assert db_user.balance == Decimal("10.00")
     session.commit.assert_not_awaited()
     state.clear.assert_not_awaited()
     message.answer.assert_awaited_once_with("top-up-amount-positive")
@@ -77,7 +78,7 @@ async def test_money_updates_balance_and_clears_state_on_success() -> None:
     message.text = "25"
     state = AsyncMock()
     session = AsyncMock()
-    db_user = make_user(balance=10)
+    db_user = make_user(balance=Decimal("10.00"))
 
     await money(
         message=message,
@@ -87,7 +88,9 @@ async def test_money_updates_balance_and_clears_state_on_success() -> None:
         session=session,
     )
 
-    assert db_user.balance == 35
+    assert db_user.balance == Decimal("35.00")
     session.commit.assert_awaited_once()
     state.clear.assert_awaited_once()
-    message.answer.assert_awaited_once_with("top-up-success:{'balance': 35}")
+    message.answer.assert_awaited_once_with(
+        "top-up-success:{'balance': Decimal('35.00')}"
+    )
