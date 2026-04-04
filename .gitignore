@@ -25,3 +25,7 @@ get-docker.sh
 gitleaks-report.json
 gitleaks-report.csv
 gitleaks-report.sarif
+
+.gemini/
+GEMINI.md
+gha-creds-*.json
