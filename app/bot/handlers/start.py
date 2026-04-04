@@ -1,5 +1,5 @@
-import aiohttp
 import asyncio
+import httpx
 
 from aiogram import F, Router
 from aiogram.filters import CommandStart
@@ -39,9 +39,12 @@ async def start(message: Message, i18n: I18nContext, db_user: User):
             reply_markup=start_menu(i18n),
             parse_mode="html",
         )
-    except aiohttp.ClientError, asyncio.TimeoutError:
+    except (httpx.HTTPError, asyncio.TimeoutError):
         await message.answer(
-            i18n.get("start-welcome-no-currency", id=f"<code>{str(message.from_user.id)}</code>"),
+            i18n.get(
+                "start-welcome-no-currency",
+                id=f"<code>{str(message.from_user.id)}</code>",
+            ),
             reply_markup=start_menu(i18n),
             parse_mode="html",
         )
