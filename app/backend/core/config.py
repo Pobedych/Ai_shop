@@ -14,7 +14,7 @@ DATABASE_URL = config(
 TG_CHANNEL = config("TG_CHANNEL", "@your_channel")
 SUPPORT_ACCOUNT = config("SUPPORT_ACCOUNT", "@support")
 """
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_HOST = config("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
 
 JWT_SECRET = os.getenv("RANDOM_SECRET", "dev-secret")

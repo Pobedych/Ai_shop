@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -86,3 +86,8 @@ async def update_user_info(db: AsyncSession, user: User, **kwargs) -> User:
     if changed:
         await db.commit()
     return user
+
+async def drop_user(db: AsyncSession, tg_id: int) -> None:
+    q = delete(User).where(User.tg_id == tg_id)
+    await db.execute(q)
+    await db.commit()
