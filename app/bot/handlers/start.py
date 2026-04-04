@@ -1,3 +1,6 @@
+import aiohttp
+import asyncio
+
 from aiogram import F, Router
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
@@ -27,16 +30,21 @@ async def start(message: Message, i18n: I18nContext, db_user: User):
         await message.answer(
             i18n.get(
                 "start-welcome",
-                id=str(message.from_user.id),
+                id=f"<code>{str(message.from_user.id)}</code>",
                 balance=db_user.balance,
                 usd_balance=await converted_currency("rub", "usd", db_user.balance),
                 tg_chanel=TG_CHANNEL,
                 account=SUPPORT_ACCOUNT,
             ),
             reply_markup=start_menu(i18n),
+            parse_mode="html",
         )
-    except :
-        await message.answer()
+    except aiohttp.ClientError, asyncio.TimeoutError:
+        await message.answer(
+            i18n.get("start-welcome-no-currency", id=f"<code>{str(message.from_user.id)}</code>"),
+            reply_markup=start_menu(i18n),
+            parse_mode="html",
+        )
 
 
 # explain Пополнение баланса

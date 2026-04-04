@@ -7,6 +7,13 @@ start-welcome =
     💡 使用 /start 打开主菜单
     🤝 支持：{ $account }
 
+start-welcome-no-currency =
+    🤖 欢迎来到 SeaShop！
+
+    ℹ️ 您的 ID：{ $id }
+    💡 汇率暂时不可用。
+    💡 使用 /start 打开主菜单
+
 settings = 请选择要修改的内容
 language-prompt = 请选择语言：
 language-switched = 语言切换成功。

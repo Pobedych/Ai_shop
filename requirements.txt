@@ -13,3 +13,4 @@ ruff
 black
 pre-commit
 aiocryptopay
+aiohttp

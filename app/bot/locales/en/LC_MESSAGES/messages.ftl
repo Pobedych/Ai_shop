@@ -7,6 +7,13 @@ start-welcome =
     💡 Use /start to open the main menu
     🤝 Support: { $account }
 
+start-welcome-no-currency =
+    🤖 Welcome to SeaShop!
+
+    ℹ️ Your ID: { $id }
+    💡 Exchange rates are temporarily unavailable.
+    💡 Use /start to open the main menu
+
 settings = Choose what to change
 language-prompt = Choose language:
 language-switched = Language switched successfully.

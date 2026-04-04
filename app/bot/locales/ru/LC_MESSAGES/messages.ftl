@@ -7,6 +7,13 @@ start-welcome =
     💡 Используйте /start для открытия главного меню
     🤝 Поддержка: { $account }
 
+start-welcome-no-currency =
+    🤖 Добро пожаловать в SeaShop!
+
+    ℹ️ Ваш ID: { $id }
+    💡 Курс валют временно недоступен.
+    💡 Используйте /start для открытия главного меню
+
 settings = Выберите, что изменить
 language-prompt = Выберите язык:
 language-switched = Язык успешно переключен.
