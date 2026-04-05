@@ -89,6 +89,7 @@ async def money(
     amount_usd = Decimal(str(amount))
 
     await create_order(amount_usd)
+    db_user.balance += amount_usd
     await session.commit()
 
     await message.answer(i18n.get("top-up-success", balance=db_user.balance))
