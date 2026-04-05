@@ -11,6 +11,7 @@ from decimal import Decimal
 
 from app.backend.core.config import SUPPORT_ACCOUNT, TG_CHANNEL
 from app.backend.models.user import User
+from app.backend.services.payment_service import create_order
 from app.backend.utils.convert import converted_currency
 from app.bot.fsm.settings_fsm import Refill
 from app.bot.keyboards.inlinekey import (
@@ -59,7 +60,7 @@ async def up_balance(message: Message, i18n: I18nContext):
     )
 
 
-@router.callback_query(F.data == "pay")
+@router.callback_query(F.data == "cryptobot_payment")
 async def pay(cq: CallbackQuery, i18n: I18nContext, state: FSMContext):
     await cq.answer()
     await state.set_state(Refill.money)
@@ -85,8 +86,9 @@ async def money(
     if amount <= 0:
         await message.answer(i18n.get("top-up-amount-positive"))
         return
+    amount_usd = Decimal(str(amount))
 
-    db_user.balance += Decimal(str(amount))
+    await create_order(amount_usd)
     await session.commit()
 
     await message.answer(i18n.get("top-up-success", balance=db_user.balance))

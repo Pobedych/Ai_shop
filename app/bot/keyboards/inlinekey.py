@@ -62,10 +62,7 @@ def top_up_menu(i18n: I18nContext):
     inline_kb = [
         [
             InlineKeyboardButton(
-                text=i18n.get("payment-method-cryptobot"), callback_data="pay"
-            ),
-            InlineKeyboardButton(
-                text=i18n.get("payment-method-xrocket"), callback_data="pay"
+                text=i18n.get("payment-method-cryptobot"), callback_data="cryptobot_payment"
             ),
         ]
     ]

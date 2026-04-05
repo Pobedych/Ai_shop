@@ -1,23 +1,45 @@
 # Ai_shop
 
-Telegram bot shop on `aiogram 3` with PostgreSQL, SQLAlchemy async sessions, i18n (`ru`/`en`) and Alembic-based schema tracking.
+Telegram bot shop on `aiogram 3` with PostgreSQL, SQLAlchemy async sessions, Alembic migrations, i18n and `aiocryptopay` integration.
 
 ## What the project does
 
 - registers Telegram users in PostgreSQL
-- stores user profile data, balance and selected language
+- stores user profile data, selected language and balance
 - shows a localized start menu
-- displays RUB balance with USD conversion
-- supports a simple top-up flow stub through bot UI
-- tracks DB schema through Alembic
+- supports `ru`, `en` and `zh` locales
+- displays product categories and items from the database
+- shows RUB balance with USD conversion through an external rate API
+- has a top-up flow entrypoint with Crypto Pay invoice creation
+- tracks schema changes through Alembic
+
+## Current status
+
+The project already has:
+
+- user registration and update through middleware
+- item browsing by category
+- language switching
+- admin-only `/admin` entrypoint
+- Docker-based local environment
+- PostgreSQL schema migrations
+
+Payment flow is currently partial:
+
+- the bot requests a top-up amount
+- creates a Crypto Pay invoice through `aiocryptopay`
+- but does not yet persist payment entities or credit the user balance after confirmed payment
 
 ## Stack
 
 - Python 3.12
-- aiogram 3
-- SQLAlchemy 2 + asyncpg
+- aiogram 3.27
+- SQLAlchemy 2.0
+- asyncpg
 - PostgreSQL 16
 - Alembic
+- aiogram_i18n + Fluent
+- aiocryptopay
 - Docker Compose
 
 ## Project structure
@@ -25,15 +47,18 @@ Telegram bot shop on `aiogram 3` with PostgreSQL, SQLAlchemy async sessions, i18
 ```text
 app/
   backend/
-    core/        # config, DB engine, session factory
-    models/      # SQLAlchemy models
-    services/    # business logic for users
-    utils/       # helper functions
+    core/         # config and DB setup
+    models/       # SQLAlchemy models
+    services/     # user, shop and payment logic
+    utils/        # helper utilities
   bot/
-    handlers/    # bot handlers
-    keyboards/   # inline/reply keyboards
-    locales/     # i18n translations
-migrations/      # Alembic config and revisions
+    fsm/          # FSM states
+    handlers/     # Telegram handlers
+    keyboards/    # inline/reply keyboards
+    locales/      # Fluent translations
+    middleware/   # DB, user, admin and i18n middleware
+migrations/
+  versions/       # Alembic revisions
 ```
 
 ## Environment variables
@@ -44,11 +69,14 @@ Required:
 
 ```env
 TOKEN=your_telegram_bot_token
+PAYMENT_API_KEY=your_cryptobot_api_token
+
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=ai_shop
 DB_USER=postgres
 DB_PASSWORD=postgres
+
 TG_CHANNEL=@your_channel
 SUPPORT_ACCOUNT=@support
 ADMINS=123456789,987654321
@@ -60,22 +88,42 @@ Optional:
 DATABASE_URL=postgresql+asyncpg://postgres:postgres@localhost:5432/ai_shop
 ```
 
-If `DATABASE_URL` is not provided, it is assembled from `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`.
+If `DATABASE_URL` is not provided, it is assembled from the `DB_*` variables.
 
-## Local run
+## Installation
+
+Create a virtual environment and install dependencies:
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+## Local run
+
+Before running locally:
+
+- make sure PostgreSQL is available
+- create the database
+- configure `.env`
+- apply migrations
+
+Run migrations:
+
+```powershell
+alembic upgrade head
+```
+
+Start the bot:
+
+```powershell
 python -m app.bot.run_bot
 ```
 
-Before running locally, make sure PostgreSQL is available and `.env` is configured.
-
 ## Run with Docker
 
-Build images:
+Build containers:
 
 ```powershell
 docker compose build
@@ -87,59 +135,104 @@ Start PostgreSQL:
 docker compose up -d db
 ```
 
-Run the bot:
-
-```powershell
-docker compose up -d bot
-```
-
 Apply migrations:
 
 ```powershell
 docker compose run --rm migrate
 ```
 
-## Alembic and migrations
+Start the bot:
 
-The project already has Alembic configured in:
+```powershell
+docker compose up -d bot
+```
+
+View logs:
+
+```powershell
+docker compose logs -f bot
+```
+
+Restart the bot after code or migration changes:
+
+```powershell
+docker compose up -d --build bot
+```
+
+## Migrations
+
+Alembic is configured in:
 
 - `alembic.ini`
 - `migrations/env.py`
 - `migrations/versions/`
 
-Current revision history starts with a baseline revision:
+Current migration chain includes:
 
 - `aa0b537312b2_baseline.py`
+- `3d4b0d6a9f21_create_items_table.py`
+- `bc380ff60f42_create_users_table.py`
+- `c7f8e2a4b1d9_align_users_schema_with_uuid_model.py`
+- `d1a2f3b4c5d6_expand_users_balance_precision.py`
 
-Important: the current baseline revision is empty and is intended for an existing database that already has the current schema. It does **not** create all tables from scratch on a clean database.
-
-### For an existing database
-
-Bind the current database state to Alembic once:
+Apply all migrations:
 
 ```powershell
-docker compose run --rm bot alembic stamp head
+alembic upgrade head
 ```
 
-After that, all future schema changes should go only through Alembic.
+Check current revision:
 
-### For future schema changes
+```powershell
+alembic current
+```
 
 Create a new migration:
 
 ```powershell
-docker compose run --rm bot alembic revision --autogenerate -m "describe_change"
+alembic revision --autogenerate -m "describe_change"
 ```
 
-Apply it:
+## Main flows
 
-```powershell
-docker compose run --rm migrate
-```
+### User flow
+
+- `/start` creates or updates a user in the database
+- the main menu provides access to shop, balance, settings and about pages
+- language is stored in the `users` table and used by i18n middleware
+
+### Shop flow
+
+- categories are loaded from the `items` table
+- item lists are filtered by category
+
+### Balance flow
+
+- the bot shows current balance in RUB
+- it also tries to convert balance to USD through an external HTTP API
+- if the exchange-rate API is unavailable, the bot falls back to a simplified welcome message
+
+### Payment flow
+
+- user selects top-up
+- user chooses CryptoBot payment
+- bot asks for an amount
+- backend creates a Crypto Pay invoice
+
+At the moment the project does not yet include:
+
+- payment persistence in a separate table
+- invoice status synchronization
+- webhook handling
+- safe balance crediting after confirmed payment
+
+## Dependencies
+
+Project dependencies are pinned in [requirements.txt](requirements.txt).
 
 ## Notes
 
-- `migrate` is useful for applying future migrations to an existing database.
-- the current baseline is not enough to bootstrap a brand-new database schema from zero
-- exchange rate conversion uses an external HTTP API, so balance display depends on network availability
-
+- `payment_service.py` currently contains only a thin wrapper around `aiocryptopay`
+- exchange-rate conversion depends on external network availability
+- the bot uses polling, not webhook delivery
+- bot state storage is in-memory
