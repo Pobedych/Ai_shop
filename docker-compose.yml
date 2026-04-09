@@ -7,8 +7,6 @@ services:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -23,8 +21,6 @@ services:
       dockerfile: Dockerfile
     container_name: ai_shop_bot
     restart: unless-stopped
-    volumes:
-      - .:/app
     env_file:
       - .env
     environment:
@@ -33,13 +29,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
   migrate:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - .:/app
     env_file:
       - .env
     environment:
@@ -51,5 +47,28 @@ services:
     command: [ "alembic", "upgrade", "head" ]
     restart: "no"
 
+  miniapp:
+    build:
+      context: ./miniapp
+      dockerfile: Dockerfile
+    container_name: ai_shop_miniapp
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2.10-alpine
+    container_name: ai_shop_caddy
+    restart: unless-stopped
+    depends_on:
+      - miniapp
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
 volumes:
   postgres_data:
+  caddy_data:
+  caddy_config:
