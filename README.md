@@ -159,6 +159,45 @@ Restart the bot after code or migration changes:
 docker compose up -d --build bot
 ```
 
+## Deploy for miniapp.noxshop.ru
+
+The main `docker-compose.yml` includes the bot, database, mini app and HTTPS termination.
+
+Requirements before first start:
+
+- the A record for `miniapp.noxshop.ru` must point to your server public IP
+- ports `80` and `443` must be open on the server firewall
+- Docker and Docker Compose plugin must be installed on the server
+- copy your `.env` to the server, but use production secrets instead of local ones
+
+Deploy:
+
+```powershell
+docker compose up -d --build
+```
+
+Check logs:
+
+```powershell
+docker compose logs -f caddy
+docker compose logs -f miniapp
+docker compose logs -f bot
+```
+
+Apply migrations manually if needed:
+
+```powershell
+docker compose run --rm migrate
+```
+
+Rebuild after frontend or bot changes:
+
+```powershell
+docker compose up -d --build
+```
+
+`Caddy` obtains and renews TLS certificates automatically, so `https://miniapp.noxshop.ru` should start working without a separate nginx + certbot setup.
+
 ## Migrations
 
 Alembic is configured in:
