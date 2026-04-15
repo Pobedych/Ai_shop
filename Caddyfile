@@ -2,3 +2,8 @@ miniapp.noxshop.ru {
     encode gzip zstd
     reverse_proxy miniapp:80
 }
+
+admin.noxshop.ru {
+    encode gzip zstd
+    reverse_proxy web:3000
+}
