@@ -159,13 +159,14 @@ Restart the bot after code or migration changes:
 docker compose up -d --build bot
 ```
 
-## Deploy for miniapp.noxshop.ru
+## Deploy for arvexo.ru
 
-The main `docker-compose.yml` includes the bot, database, mini app and HTTPS termination.
+The main `docker-compose.yml` includes the bot, database, admin panel, mini app and HTTPS termination.
 
 Requirements before first start:
 
-- the A record for `miniapp.noxshop.ru` must point to your server public IP
+- the A record for `miniapp.arvexo.ru` must point to your server public IP
+- the A record for `admin.arvexo.ru` must point to your server public IP
 - ports `80` and `443` must be open on the server firewall
 - Docker and Docker Compose plugin must be installed on the server
 - copy your `.env` to the server, but use production secrets instead of local ones
@@ -196,7 +197,7 @@ Rebuild after frontend or bot changes:
 docker compose up -d --build
 ```
 
-`Caddy` obtains and renews TLS certificates automatically, so `https://miniapp.noxshop.ru` should start working without a separate nginx + certbot setup.
+`Caddy` obtains and renews TLS certificates automatically, so `https://miniapp.arvexo.ru` and `https://admin.arvexo.ru` should start working without a separate nginx + certbot setup.
 
 ## Migrations
 

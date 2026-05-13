@@ -137,7 +137,7 @@ onUnmounted(() => {
 
     <section class="hero-card">
       <div class="hero-copy">
-        <p class="eyebrow">NoxShop mini app</p>
+        <p class="eyebrow">Arvexo mini app</p>
         <h1>Digital storefront built for Telegram speed.</h1>
         <p class="hero-text">
           {{ welcomeText }}
@@ -161,7 +161,7 @@ onUnmounted(() => {
 
       <div class="hero-visual">
         <div class="visual-frame">
-          <img :src="heroImage" alt="NoxShop platform illustration" />
+          <img :src="heroImage" alt="Arvexo platform illustration" />
         </div>
         <div class="visual-card">
           <span>Live now</span>

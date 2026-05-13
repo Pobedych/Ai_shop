@@ -41,4 +41,4 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd /root/Ai_shop
-            docker compose up -d --build bot
+            docker compose up -d --build
