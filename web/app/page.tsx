@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   // Получаем реальную статистику из базы данных
   const [totalUsers, activeItems, outOfStockItems] = await Promise.all([
@@ -20,6 +22,10 @@ export default async function DashboardPage() {
     prisma.items.count({ where: { count: { gt: 0 } } }),
     prisma.items.count({ where: { count: 0 } }),
   ]);
+  const topItems = await prisma.items.findMany({
+    take: 3,
+    orderBy: { count: "desc" },
+  });
 
   const stats = [
     {
@@ -99,7 +105,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
              <div className="space-y-4">
-                {(await prisma.items.findMany({ take: 3, orderBy: { count: 'desc' } })).map((item, i) => (
+                {topItems.map((item, i) => (
                    <div key={item.id} className="flex items-center gap-4">
                       <div className="h-9 w-9 rounded bg-muted flex items-center justify-center font-bold">
                         {i + 1}
