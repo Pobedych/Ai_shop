@@ -15,6 +15,13 @@ import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+type TopItem = {
+  id: string;
+  name: string;
+  count: number;
+  price: { toString(): string };
+};
+
 export default async function DashboardPage() {
   // Получаем реальную статистику из базы данных
   const [totalUsers, activeItems, outOfStockItems] = await Promise.all([
@@ -25,7 +32,13 @@ export default async function DashboardPage() {
   const topItems = await prisma.items.findMany({
     take: 3,
     orderBy: { count: "desc" },
-  });
+    select: {
+      id: true,
+      name: true,
+      count: true,
+      price: true,
+    },
+  }) as TopItem[];
 
   const stats = [
     {
