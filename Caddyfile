@@ -2,8 +2,3 @@ miniapp.arvexo.ru {
     encode gzip zstd
     reverse_proxy miniapp:80
 }
-
-admin.arvexo.ru {
-    encode gzip zstd
-    reverse_proxy web:3000
-}
