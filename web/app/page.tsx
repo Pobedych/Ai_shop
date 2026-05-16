@@ -118,7 +118,7 @@ export default async function DashboardPage() {
           </CardHeader>
           <CardContent>
              <div className="space-y-4">
-                {topItems.map((item, i) => (
+                {topItems.map((item: TopItem, i: number) => (
                    <div key={item.id} className="flex items-center gap-4">
                       <div className="h-9 w-9 rounded bg-muted flex items-center justify-center font-bold">
                         {i + 1}
