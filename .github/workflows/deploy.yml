@@ -32,7 +32,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           source: "."
-          target: "/root/Ai_shop"
+          target: "/root/projects/Ai_shop"
       - name: Restart Docker containers
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -40,5 +40,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd /root/Ai_shop
+            cd /root/projects/Ai_shop
             docker compose up -d --build
